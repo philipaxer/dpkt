@@ -84,10 +84,13 @@ class Ethernet(dpkt.Packet):
         dpkt.Packet.__init__(self, *args, **kwargs)
         # if data was given in kwargs, try to unpack it
         if self.data:
+            print("__init__")
             if isstr(self.data) or isinstance(self.data, bytes):
+                print("  -> isstr or is bytes")
                 self._unpack_data(self.data)
 
     def _unpack_data(self, buf):
+        print("_unpack_data")
         # unpack vlan tag and mpls label stacks
         if self._next_type in _ETH_TYPES_QINQ:
             self.vlan_tags = []
@@ -137,8 +140,10 @@ class Ethernet(dpkt.Packet):
             self.data = buf
 
     def unpack(self, buf):
+        print("unpack")
         dpkt.Packet.unpack(self, buf)
         if self.type > 1500:
+            print("  -> unpack and type > 1500")
             # Ethernet II
             self._next_type = self.type
             self._unpack_data(self.data)
